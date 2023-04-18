@@ -1,7 +1,7 @@
 **Before The PR (Pull Request):**
 
 
-**After THe PR (Pull Request):**
+**After The PR (Pull Request):**
 
 
 **Why Was This Changed?**
@@ -14,4 +14,3 @@
 
 
 **Mentions:** _(Type `@` then the person's name)_
-
