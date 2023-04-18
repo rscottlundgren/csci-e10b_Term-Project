@@ -12,6 +12,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private boolean isValidGroupTag = false;
     private boolean isValidApplyNowButtonTag = false;
     private boolean isValidPositionTitleTag = false;
+    private boolean isValidCompanyNameTag = false;
     private boolean isValidPositionLocationTag = false;
 
     /**
@@ -59,12 +60,38 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     private void formatPositionTitle(char[] data) {
         String title = new String(data);
-        System.out.print("" + title + " ");
+        System.out.println("Position:\t" + title + " ");
     }
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * ------------------ Methods To Handle Position Location ---------------- *
+     * ------------------- Methods To Handle Company Title ------------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidCompanyNameStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidCompanyNameTag = false;
+        if (tag.equals(HTML.Tag.SPAN) && mas.containsAttribute(HTML.Attribute.CLASS, "company-name")) {
+            isValidCompanyNameTag = true;
+        }
+        return isValidCompanyNameTag;
+    }
+
+    private boolean isValidCompanyNameEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.SPAN);
+    }
+
+    private void formatCompanyName(char[] data) {
+        char[] companyName = new char[data.length - 3];
+        for (int i = 3; i < data.length; i++) {
+            companyName[i - 3] = data[i];
+        }
+        System.out.println("Company:\t" + new String(companyName));
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ----------------- Methods To Handle Position Location ----------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
 
@@ -82,7 +109,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     private void formatPositionLocation(char[] data) {
         String location = new String(data);
-        System.out.println("Location: " + location);
+        System.out.println("Location:\t" + location + "\n");
     }
 
     /**
@@ -136,6 +163,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidPositionTitleStartTag(tag, mas)) {
             isValidPositionTitleTag = true;
         }
+        if (isValidCompanyNameStartTag(tag, mas)) {
+            isValidCompanyNameTag = true;
+        }
         if (isValidPositionLocationStartTag(tag, mas)) {
             isValidPositionLocationTag = true;
         }
@@ -154,6 +184,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidPositionTitleEndTag(tag)) {
             isValidPositionTitleTag = false;
         }
+        if (isValidCompanyNameEndTag(tag)) {
+            isValidCompanyNameTag = false;
+        }
         if (isValidPositionLocationEndTag(tag)) {
             isValidPositionLocationTag = false;
         }
@@ -168,6 +201,8 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
                 formatApplyNowButton(data);
             } else if (isValidPositionTitleTag) {
                 formatPositionTitle(data);
+            } else if (isValidCompanyNameTag) {
+                formatCompanyName(data);
             } else if (isValidPositionLocationTag) {
                 formatPositionLocation(data);
             } else {
