@@ -11,6 +11,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private boolean isValidIndividualTag = false;
     private boolean isValidGroupTag = false;
     private boolean isValidPositionTitleTag = false;
+    private boolean isValidPositionLocationTag = false;
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -32,7 +33,30 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     private void formatPositionTitle(char[] data) {
         String title = new String(data);
-        System.out.print("# " + title + " ");
+        System.out.print("" + title + " ");
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ------------------ Methods To Handle Position Location ---------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidPositionLocationStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidPositionLocationTag = false;
+        if (tag.equals(HTML.Tag.DIV) && mas.containsAttribute(HTML.Attribute.CLASS, "location")) {
+            isValidPositionLocationTag = true;
+        }
+        return isValidPositionLocationTag;
+    }
+
+    private boolean isValidPositionLocationEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.DIV);
+    }
+
+    private void formatPositionLocation(char[] data) {
+        String location = new String(data);
+        System.out.println("Location: " + location);
     }
 
     /**
@@ -63,9 +87,11 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private boolean isValidIndividualTag(HTML.Tag tag) {
         return tag.equals(HTML.Tag.H1) ||
                 tag.equals(HTML.Tag.H2) ||
+                tag.equals(HTML.Tag.H3) ||
                 tag.equals(HTML.Tag.SPAN) ||
                 tag.equals(HTML.Tag.P) ||
-                tag.equals(HTML.Tag.UL);
+                tag.equals(HTML.Tag.UL) ||
+                tag.equals(HTML.Tag.DIV);
     }
 
     /**
@@ -81,17 +107,23 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidPositionTitleStartTag(tag, mas)) {
             isValidPositionTitleTag = true;
         }
+        if (isValidPositionLocationStartTag(tag, mas)) {
+            isValidPositionLocationTag = true;
+        }
         if (isValidIndividualTag(tag)) {
             isValidIndividualTag = true;
         }
     }
 
     public void handleEndTag(HTML.Tag tag, int pos) {
+        if (isValidGroupEndTag(tag)) {
+            isValidGroupTag = false;
+        }
         if (isValidPositionTitleEndTag(tag)) {
             isValidPositionTitleTag = false;
         }
-        if (isValidGroupEndTag(tag)) {
-            isValidGroupTag = false;
+        if (isValidPositionLocationEndTag(tag)) {
+            isValidPositionLocationTag = false;
         }
         if (isValidIndividualTag(tag)) {
             isValidIndividualTag = false;
@@ -102,6 +134,8 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidGroupTag && isValidIndividualTag) {
             if (isValidPositionTitleTag) {
                 formatPositionTitle(data);
+            } else if (isValidPositionLocationTag) {
+                formatPositionLocation(data);
             } else {
                 System.out.println(data);
             }
