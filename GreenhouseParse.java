@@ -10,8 +10,34 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     // Method State
     private boolean isValidIndividualTag = false;
     private boolean isValidGroupTag = false;
+    private boolean isValidApplyNowButtonTag = false;
     private boolean isValidPositionTitleTag = false;
     private boolean isValidPositionLocationTag = false;
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ----------------- Methods To Handle "Apply Now" Button ---------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidApplyNowButtonStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidApplyNowButtonTag = false;
+        if (tag.equals(HTML.Tag.A) && mas.containsAttribute(HTML.Attribute.ID, "apply_button")) {
+            isValidApplyNowButtonTag = true;
+        }
+        return isValidApplyNowButtonTag;
+    }
+
+    private boolean isValidApplyNowButtonEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.A);
+    }
+
+    private void formatApplyNowButton(char[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = '\0';
+        }
+        System.out.print(data);
+    }
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -104,6 +130,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidGroupStartTag(tag, mas)) {
             isValidGroupTag = true;
         }
+        if (isValidApplyNowButtonStartTag(tag, mas)) {
+            isValidApplyNowButtonTag = true;
+        }
         if (isValidPositionTitleStartTag(tag, mas)) {
             isValidPositionTitleTag = true;
         }
@@ -119,6 +148,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidGroupEndTag(tag)) {
             isValidGroupTag = false;
         }
+        if (isValidApplyNowButtonEndTag(tag)) {
+            isValidApplyNowButtonTag = false;
+        }
         if (isValidPositionTitleEndTag(tag)) {
             isValidPositionTitleTag = false;
         }
@@ -132,7 +164,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     public void handleText(char[] data, int pos) {
         if (isValidGroupTag && isValidIndividualTag) {
-            if (isValidPositionTitleTag) {
+            if (isValidApplyNowButtonTag) {
+                formatApplyNowButton(data);
+            } else if (isValidPositionTitleTag) {
                 formatPositionTitle(data);
             } else if (isValidPositionLocationTag) {
                 formatPositionLocation(data);
