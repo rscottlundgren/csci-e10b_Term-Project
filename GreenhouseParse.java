@@ -1,0 +1,110 @@
+
+// import javax.swing.text.html.parser.*;
+import javax.swing.text.html.*;
+import javax.swing.text.*;
+// import java.io.*;
+// import java.util.Arrays;
+
+public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
+
+    // Method State
+    private boolean isValidIndividualTag = false;
+    private boolean isValidGroupTag = false;
+    private boolean isValidPositionTitleTag = false;
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ------------------- Methods To Handle Position Title ------------------ *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidPositionTitleStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidPositionTitleTag = false;
+        if (tag.equals(HTML.Tag.H1) && mas.containsAttribute(HTML.Attribute.CLASS, "app-title")) {
+            isValidPositionTitleTag = true;
+        }
+        return isValidPositionTitleTag;
+    }
+
+    private boolean isValidPositionTitleEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.H1);
+    }
+
+    private void formatPositionTitle(char[] data) {
+        String title = new String(data);
+        System.out.print("# " + title + " ");
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * --------------------- Methods To Handle Group Tags -------------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidGroupStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidStartTag = false;
+        if (tag.equals(HTML.Tag.DIV) && (mas.containsAttribute(HTML.Attribute.ID, "header") || mas
+                .containsAttribute(HTML.Attribute.ID, "content"))) {
+            isValidStartTag = true;
+        }
+        return isValidStartTag;
+    }
+
+    private boolean isValidGroupEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.DIV);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ------------------ Methods To Handle Individual Tags ------------------ *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidIndividualTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.H1) ||
+                tag.equals(HTML.Tag.H2) ||
+                tag.equals(HTML.Tag.SPAN) ||
+                tag.equals(HTML.Tag.P) ||
+                tag.equals(HTML.Tag.UL);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ------- Overridden `HTMLEditorKit.ParserCallback` Class Methods ------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    public void handleStartTag(HTML.Tag tag, MutableAttributeSet mas, int pos) {
+        if (isValidGroupStartTag(tag, mas)) {
+            isValidGroupTag = true;
+        }
+        if (isValidPositionTitleStartTag(tag, mas)) {
+            isValidPositionTitleTag = true;
+        }
+        if (isValidIndividualTag(tag)) {
+            isValidIndividualTag = true;
+        }
+    }
+
+    public void handleEndTag(HTML.Tag tag, int pos) {
+        if (isValidPositionTitleEndTag(tag)) {
+            isValidPositionTitleTag = false;
+        }
+        if (isValidGroupEndTag(tag)) {
+            isValidGroupTag = false;
+        }
+        if (isValidIndividualTag(tag)) {
+            isValidIndividualTag = false;
+        }
+    }
+
+    public void handleText(char[] data, int pos) {
+        if (isValidGroupTag && isValidIndividualTag) {
+            if (isValidPositionTitleTag) {
+                formatPositionTitle(data);
+            } else {
+                System.out.println(data);
+            }
+        }
+    }
+}
