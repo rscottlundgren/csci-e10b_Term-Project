@@ -19,6 +19,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private boolean isValidLITag = false;
     private boolean isValidPTag = false;
     private boolean isValidSTRONGTag = false;
+    private boolean isValidATag = false;
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -270,6 +271,21 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ---------------- Methods To Handle Strong (STRONG) Tags --------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidATag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.A);
+    }
+
+    private void formatATag(char[] data) {
+        String a = new String(data);
+        System.out.print(" " + a + " ");
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * ------- Overridden `HTMLEditorKit.ParserCallback` Class Methods ------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
@@ -308,6 +324,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidSTRONGTag(tag)) {
             isValidSTRONGTag = true;
         }
+        if (isValidATag(tag)) {
+            isValidATag = true;
+        }
     }
 
     public void handleEndTag(HTML.Tag tag, int pos) {
@@ -344,6 +363,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidSTRONGTag(tag)) {
             isValidSTRONGTag = false;
         }
+        if (isValidATag(tag)) {
+            isValidATag = false;
+        }
     }
 
     public void handleText(char[] data, int pos) {
@@ -358,7 +380,6 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
                 formatViewAllJobsLink(data);
             } else if (isValidPositionLocationTag) {
                 formatPositionLocation(data);
-                System.out.println();
             } else {
                 System.out.println(data);
             }
@@ -372,6 +393,8 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
                 formatPTag(data);
             } else if (isValidSTRONGTag) {
                 formatSTRONGTag(data);
+            } else if (isValidATag) {
+                formatATag(data);
             }
         }
     }
