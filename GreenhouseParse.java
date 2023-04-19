@@ -20,6 +20,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private boolean isValidPTag = false;
     private boolean isValidSTRONGTag = false;
     private boolean isValidATag = false;
+    private boolean isValidDIVTag = false;
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -271,7 +272,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * ---------------- Methods To Handle Strong (STRONG) Tags --------------- *
+     * ---------------- Methods To Handle A (A) Tags --------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
 
@@ -282,6 +283,29 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private void formatATag(char[] data) {
         String a = new String(data);
         System.out.print(" " + a + " ");
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ---------------- Methods To Handle Div (DIV) Tags --------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidDIVStartTag(HTML.Tag tag) {
+        boolean isValidDIVTag = false;
+        if (tag.equals(HTML.Tag.DIV)) {
+            isValidDIVTag = true;
+        }
+        return isValidDIVTag;
+    }
+
+    private boolean isValidDIVEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.DIV);
+    }
+
+    private void formatDIVTag(char[] data) {
+        String div = new String(data);
+        System.out.println(div);
     }
 
     /**
@@ -327,6 +351,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidATag(tag)) {
             isValidATag = true;
         }
+        if (isValidDIVStartTag(tag)) {
+            isValidDIVTag = true;
+        }
     }
 
     public void handleEndTag(HTML.Tag tag, int pos) {
@@ -366,6 +393,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidATag(tag)) {
             isValidATag = false;
         }
+        if (isValidDIVEndTag(tag)) {
+            isValidDIVTag = false;
+        }
     }
 
     public void handleText(char[] data, int pos) {
@@ -395,6 +425,8 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
                 formatSTRONGTag(data);
             } else if (isValidATag) {
                 formatATag(data);
+            } else if (isValidDIVTag) {
+                formatDIVTag(data);
             }
         }
     }
