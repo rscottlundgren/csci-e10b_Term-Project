@@ -18,6 +18,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private boolean isValidHTag = false;
     private boolean isValidLITag = false;
     private boolean isValidPTag = false;
+    private boolean isValidSTRONGTag = false;
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -239,7 +240,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * ---------------- Methods To Handle Paragraph (p) Tags ----------------- *
+     * ---------------- Methods To Handle Paragraph (P) Tags ----------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
 
@@ -250,6 +251,21 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     private void formatPTag(char[] data) {
         String paragraph = new String(data);
         System.out.println("\n" + paragraph);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ---------------- Methods To Handle Strong (STRONG) Tags --------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidSTRONGTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.STRONG);
+    }
+
+    private void formatSTRONGTag(char[] data) {
+        String strong = new String(data);
+        System.out.print(" " + strong + " ");
     }
 
     /**
@@ -289,6 +305,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidPTag(tag)) {
             isValidPTag = true;
         }
+        if (isValidSTRONGTag(tag)) {
+            isValidSTRONGTag = true;
+        }
     }
 
     public void handleEndTag(HTML.Tag tag, int pos) {
@@ -322,6 +341,9 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidPTag(tag)) {
             isValidPTag = false;
         }
+        if (isValidSTRONGTag(tag)) {
+            isValidSTRONGTag = false;
+        }
     }
 
     public void handleText(char[] data, int pos) {
@@ -348,6 +370,8 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
                 formatLITag(data);
             } else if (isValidPTag) {
                 formatPTag(data);
+            } else if (isValidSTRONGTag) {
+                formatSTRONGTag(data);
             }
         }
     }
