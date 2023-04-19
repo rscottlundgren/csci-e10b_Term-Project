@@ -7,13 +7,17 @@ import javax.swing.text.*;
 
 public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
-    // Method State
-    private boolean isValidIndividualTag = false;
-    private boolean isValidGroupTag = false;
+    // Instance State
     private boolean isValidApplyNowButtonTag = false;
     private boolean isValidPositionTitleTag = false;
     private boolean isValidCompanyNameTag = false;
+    private boolean isValidViewAllJobsTag = false;
     private boolean isValidPositionLocationTag = false;
+    private boolean isValidHeaderGroupTag = false;
+    private boolean isValidContentGroupTag = false;
+    private boolean isValidHTag = false;
+    private boolean isValidLITag = false;
+    private boolean isValidPTag = false;
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -34,9 +38,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
     }
 
     private void formatApplyNowButton(char[] data) {
-        for (int i = 0; i < data.length; i++) {
-            data[i] = '\0';
-        }
+        emptyCharArray(data);
         System.out.print(data);
     }
 
@@ -65,7 +67,7 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * ------------------- Methods To Handle Company Title ------------------- *
+     * ------------------- Methods To Handle Company Name -------------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
 
@@ -91,6 +93,29 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ---------------- Methods To Handle "View All Jobs" Link --------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidViewAllJobsStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidViewAllJobsTag = false;
+        if (tag.equals(HTML.Tag.A) && mas.containsAttribute("data-mapped", "true")) {
+            isValidViewAllJobsTag = true;
+        }
+        return isValidViewAllJobsTag;
+    }
+
+    private boolean isValidViewAllJobsEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.A);
+    }
+
+    private void formatViewAllJobsLink(char[] data) {
+        emptyCharArray(data);
+        System.out.print(data);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * ----------------- Methods To Handle Position Location ----------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
@@ -109,42 +134,122 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
 
     private void formatPositionLocation(char[] data) {
         String location = new String(data);
-        System.out.println("Location:\t" + location + "\n");
+        System.out.println("Location:\t" + location);
     }
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * --------------------- Methods To Handle Group Tags -------------------- *
+     * ----------------- Methods To Handle Header Group Tags ----------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
 
-    private boolean isValidGroupStartTag(HTML.Tag tag, MutableAttributeSet mas) {
-        boolean isValidStartTag = false;
-        if (tag.equals(HTML.Tag.DIV) && (mas.containsAttribute(HTML.Attribute.ID, "header") || mas
-                .containsAttribute(HTML.Attribute.ID, "content"))) {
-            isValidStartTag = true;
+    private boolean isValidHeaderGroupStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidHeaderGroupTag = false;
+        if (tag.equals(HTML.Tag.DIV) && mas.containsAttribute(HTML.Attribute.ID, "header")) {
+            isValidHeaderGroupTag = true;
         }
-        return isValidStartTag;
+        return isValidHeaderGroupTag;
     }
 
-    private boolean isValidGroupEndTag(HTML.Tag tag) {
+    private boolean isValidHeaderGroupEndTag(HTML.Tag tag) {
         return tag.equals(HTML.Tag.DIV);
     }
 
     /**
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * ------------------ Methods To Handle Individual Tags ------------------ *
+     * ----------------- Methods To Handle Content Group Tags ---------------- *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      */
 
-    private boolean isValidIndividualTag(HTML.Tag tag) {
+    private boolean isValidContentGroupStartTag(HTML.Tag tag, MutableAttributeSet mas) {
+        boolean isValidContentGroupTag = false;
+        if (tag.equals(HTML.Tag.DIV) && mas.containsAttribute(HTML.Attribute.ID, "content")) {
+            isValidContentGroupTag = true;
+        }
+        return isValidContentGroupTag;
+    }
+
+    private boolean isValidContentGroupEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.DIV);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ----------- Methods To Handle H1, H2, H3, H4, H5, & H6 Tags ----------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidHStartTag(HTML.Tag tag) {
+        boolean isValidHTag = false;
+        if (tag.equals(HTML.Tag.H1) ||
+                tag.equals(HTML.Tag.H2) ||
+                tag.equals(HTML.Tag.H3) ||
+                tag.equals(HTML.Tag.H4) ||
+                tag.equals(HTML.Tag.H5) ||
+                tag.equals(HTML.Tag.H6)) {
+            isValidHTag = true;
+        }
+        return isValidHTag;
+    }
+
+    private boolean isValidHEndTag(HTML.Tag tag) {
         return tag.equals(HTML.Tag.H1) ||
                 tag.equals(HTML.Tag.H2) ||
                 tag.equals(HTML.Tag.H3) ||
-                tag.equals(HTML.Tag.SPAN) ||
-                tag.equals(HTML.Tag.P) ||
-                tag.equals(HTML.Tag.UL) ||
-                tag.equals(HTML.Tag.DIV);
+                tag.equals(HTML.Tag.H4) ||
+                tag.equals(HTML.Tag.H5) ||
+                tag.equals(HTML.Tag.H6);
+    }
+
+    private void formatHTag(char[] data) {
+        String transformedArray = new String(data).toLowerCase();
+        char[] textHTag = transformedArray.toCharArray();
+        textHTag[0] = Character.toUpperCase(textHTag[0]);
+        for (int i = 0; i < textHTag.length; i++) {
+            if (textHTag[i] == ' ') {
+                textHTag[i + 1] = Character.toUpperCase(textHTag[i + 1]);
+            }
+        }
+        String contentSectionHeading = new String(textHTag);
+        System.out.println("\n" + contentSectionHeading);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ---------------- Methods To Handle List Item (LI) Tags ---------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidLIStartTag(HTML.Tag tag) {
+        boolean isValidLITag = false;
+        if (tag.equals(HTML.Tag.LI)) {
+            isValidLITag = true;
+        }
+        return isValidLITag;
+    }
+
+    private boolean isValidLIEndTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.LI);
+    }
+
+    private void formatLITag(char[] data) {
+        String listItem = new String(data);
+        System.out.println("\t\u23FA " + listItem);
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * ---------------- Methods To Handle Paragraph (p) Tags ----------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private boolean isValidPTag(HTML.Tag tag) {
+        return tag.equals(HTML.Tag.P);
+    }
+
+    private void formatPTag(char[] data) {
+        String paragraph = new String(data);
+        System.out.println("\n" + paragraph);
     }
 
     /**
@@ -154,8 +259,8 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
      */
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet mas, int pos) {
-        if (isValidGroupStartTag(tag, mas)) {
-            isValidGroupTag = true;
+        if (isValidHeaderGroupStartTag(tag, mas)) {
+            isValidHeaderGroupTag = true;
         }
         if (isValidApplyNowButtonStartTag(tag, mas)) {
             isValidApplyNowButtonTag = true;
@@ -166,17 +271,29 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidCompanyNameStartTag(tag, mas)) {
             isValidCompanyNameTag = true;
         }
+        if (isValidViewAllJobsStartTag(tag, mas)) {
+            isValidViewAllJobsTag = true;
+        }
         if (isValidPositionLocationStartTag(tag, mas)) {
             isValidPositionLocationTag = true;
         }
-        if (isValidIndividualTag(tag)) {
-            isValidIndividualTag = true;
+        if (isValidContentGroupStartTag(tag, mas)) {
+            isValidContentGroupTag = true;
+        }
+        if (isValidHStartTag(tag)) {
+            isValidHTag = true;
+        }
+        if (isValidLIStartTag(tag)) {
+            isValidLITag = true;
+        }
+        if (isValidPTag(tag)) {
+            isValidPTag = true;
         }
     }
 
     public void handleEndTag(HTML.Tag tag, int pos) {
-        if (isValidGroupEndTag(tag)) {
-            isValidGroupTag = false;
+        if (isValidHeaderGroupEndTag(tag)) {
+            isValidHeaderGroupTag = false;
         }
         if (isValidApplyNowButtonEndTag(tag)) {
             isValidApplyNowButtonTag = false;
@@ -187,27 +304,63 @@ public class GreenhouseParse extends HTMLEditorKit.ParserCallback {
         if (isValidCompanyNameEndTag(tag)) {
             isValidCompanyNameTag = false;
         }
+        if (isValidViewAllJobsEndTag(tag)) {
+            isValidViewAllJobsTag = false;
+        }
         if (isValidPositionLocationEndTag(tag)) {
             isValidPositionLocationTag = false;
         }
-        if (isValidIndividualTag(tag)) {
-            isValidIndividualTag = false;
+        if (isValidContentGroupEndTag(tag)) {
+            isValidContentGroupTag = false;
+        }
+        if (isValidHEndTag(tag)) {
+            isValidHTag = false;
+        }
+        if (isValidLIEndTag(tag)) {
+            isValidLITag = false;
+        }
+        if (isValidPTag(tag)) {
+            isValidPTag = false;
         }
     }
 
     public void handleText(char[] data, int pos) {
-        if (isValidGroupTag && isValidIndividualTag) {
+        if (isValidHeaderGroupTag) {
             if (isValidApplyNowButtonTag) {
                 formatApplyNowButton(data);
             } else if (isValidPositionTitleTag) {
                 formatPositionTitle(data);
             } else if (isValidCompanyNameTag) {
                 formatCompanyName(data);
+            } else if (isValidViewAllJobsTag) {
+                formatViewAllJobsLink(data);
             } else if (isValidPositionLocationTag) {
                 formatPositionLocation(data);
+                System.out.println();
             } else {
                 System.out.println(data);
             }
+        }
+        if (isValidContentGroupTag) {
+            if (isValidHTag) {
+                formatHTag(data);
+            } else if (isValidLITag) {
+                formatLITag(data);
+            } else if (isValidPTag) {
+                formatPTag(data);
+            }
+        }
+    }
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * -------------------- Miscellaneous Helper Methods --------------------- *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    private void emptyCharArray(char[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = '\0';
         }
     }
 }
