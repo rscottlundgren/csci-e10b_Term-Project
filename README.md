@@ -18,7 +18,18 @@ To help with understanding the generalized flow of events / data, I've included 
 
 ![Rough Sketch of Application's MVC Architecture](img/MVC%20Architecture.jpg)
 
-Further information TBD
+An example flow might be the act of parsing...
+
+1. The User provides a File Path (where they would like the main 'PostingParser' directory to be created) and a URL (that they would like to parse). 
+2. The User clicks the "Parse The Description!" button.
+3. Upon clicking, the `PostingParser` Event Listener for that button (`btn_ParseNewJD_FormField_Submit`) collects the values found in both JTextFields and verifies that both are not empty Strings (if either or both are empty Strings, an error "toast" is shown on the screen).
+4. After successfully verifying that both JTextFields are populated, `PostingParser` (View) asks `PostingParserBackEnd` (Controller) to verify that the provided URL is valid (if it's not a valid URL, an error "toast" is shown on the screen).
+5. Assuming the URL is valid, the `PostingParserBackEnd` (Controller) begins calling the `GreenhouseParser` (Model) to create the files in the local machine.
+6. Files created the `PostingParser` (View) begins to pull down the old window to build the new window while the `PostingParserBackEnd` (Controller) begins tallying the `UniqueWordsAndCounts` (Model) against the `ForbiddenWords` (Model).
+7. The `PostingParser` (View) uses the `PostingParserBackEnd` (Controller) to create template JLabels that are inserted into the "Word Results" component.
+8. Once all the words have been tallied and inserted as JLabels into the "Word Results" component, the `PostingParser` (View) refreshes the panel so that the new data is displayed.
+
+That said, there's a bit more to how I structured this program than a simple MVC...
 
 ### Front End Structure
 TBD
