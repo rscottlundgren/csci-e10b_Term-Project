@@ -8,6 +8,7 @@ am
 an
 and
 any
+apart
 are
 around
 as
@@ -43,8 +44,8 @@ have
 he
 her
 him
-his
 how
+husband
 i
 if
 in
@@ -61,6 +62,7 @@ lot
 make
 may
 me
+medical
 most
 my
 new

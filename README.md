@@ -1,11 +1,24 @@
 # PostingParser
+## Table of Contents
+- [Concept](https://github.com/rscottlundgren/csci-e10b_Term-Project#concept)
+- [History](https://github.com/rscottlundgren/csci-e10b_Term-Project#history)
+- [Application Architecture](https://github.com/rscottlundgren/csci-e10b_Term-Project#application-architecture)
+  - [Front End Structure](https://github.com/rscottlundgren/csci-e10b_Term-Project#front-end-structure)
+  - [Back End Structure](https://github.com/rscottlundgren/csci-e10b_Term-Project#back-end-structure)
+- [HOWTO: Use This Application](https://github.com/rscottlundgren/csci-e10b_Term-Project#howto-use-this-application)
+- [HOWTO: Expand This Application](https://github.com/rscottlundgren/csci-e10b_Term-Project#howto-expand-this-application)
+
 ## Concept
 It's a pain having to tailor a resume and a cover letter to a specific job posting. Reading a job posting I often find myself remembering the perfect sentence, paragraph, or bullet point in a prior application to another company that would be completely applicable... if only I could remember which company that was or what date I applied (to help narrow the search). Rather than "reinvent the wheel" trying to rewrite the sentence, paragraph, or bullet, I'd much rather have that information stored in a database that gets called when certain keywords are parsed in a job description. Which brings us to "PostingParser" version 0 (patent pending).
 
 In version 0, the "PostingParser" will parse individual postings for keywords that will be collected and vetted against (what I call) "Forbidden Words". These "Forbidden Words" are words that the User of the program has deemed fluff (or chaff) from the real meat (or wheat) of the posting that would help them tailor a better resume or cover letter. Once compared to the "Forbidden Words" list, these remaining unique words will be counted (weighted) based on how frequently a particular word appears, potentially impacting the sentences, paragraphs, or bullets that the User might include in their cover letter or resume.
 
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
 ## History
 This program was designed over the course of a month as part of a semester project for [Harvard Extension School](https://extension.harvard.edu/)'s [CSCI-E10b - Introduction to Computer Science Using Java II](https://courses.dce.harvard.edu/?action=explore-program&program=gradcert%7Cgradcert-programming&_gl=1*r1674d*_ga*MTU3NDg1NTAwMy4xNjY4MjIxMTc4*_ga_N1Q4JMJ72W*MTY4NTcxNzkxMS40Mi4xLjE2ODU3MTc5NDIuMjkuMC4w). The class was given roughly seven weeks to design and submit a plan for a program written entirely in [Java](https://docs.oracle.com/en/java/javase/18/docs/api/index.html) (using [Java Swing](https://docs.oracle.com/en/java/javase/18/docs/api/java.desktop/javax/swing/package-summary.html) to create the GUI). It was recommended that we follow a [MVC](https://developer.mozilla.org/en-US/docs/Glossary/MVC) architecture and - ultimately - there were very few requirements beyond coming up with a unique template class that was used in the project. Anything that had been learned during the semester was fair game. Given that I was unemployed and job searching during the second half of the semester (still am at the time of this writing), this concept for a project sat well with me and seemed like a good piece to showcase my coding chops at the time.
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ## Application Architecture
 As previously stated, a MVC architecture was used in the design of this program:
@@ -31,14 +44,68 @@ An example flow might be the act of parsing...
 
 That said, there's a bit more to how I structured this program than a simple MVC...
 
-### Front End Structure
-TBD
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
+### Front End (UI / UX)
+#### For The User...
+From a User standpoint I wanted to make this an easy application to understand and use, which led to the decision to have a very basic `MenuBar` at the top of the JFrame and a `MainDisplay` panel as the place where information from the User could be displayed and input into the program as a whole. Further, keeping interactive sections on one side of the `MainDisplay` and "Read Only" instructions or data on another side of the `MainDisplay` left me with the idea of taking a `panel` (or `pnl`) approach to the project (you can see the next section for a specific breakdown of how I accomplished that in Java Swing). 
+
+Also, my eyes are pretty sensitive (and have gotten more sensitive as I age) to "light mode" screens. Dark mode is a lot easier for my eyes, so I opted to build a "dark mode" first before creating a "light mode" (if I had the time while coding the project over the four week period). Additionally, having a "dark mode" as my first choice allowed me a larger color palette to choose from when trying to create contrasting colors (which is why I ended up with a yellow / green / chartreuse color palette)[^1].
+
+Finally, there's a lot of job search "advice" out there about how to prepare for an interview. I wanted this program to help job seekers to think at least one step ahead. I know from my own personal experience that I've interviewed for a job after the posting was taken down and - as a result - was at something of a disadvantage when interviewing. I wanted to make sure that not only would this program be able to cut that disadvantage out at the pass, but also be able to use that saved data for potential data aggregation over time - maybe there are unnoticed / unconscious trends in what jobs / roles a User is looking at that might help them guide their own job search towards a fulfilling career? (Worth noting, that kind of functionality - while I believe it to be really helpful - is well beyond the present scope of this project)
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
+#### For The Developer
+As previously stated, the application is designed with a two-panel approach in mind. Java Swing follows a relatively unique scaffold for implementing / designing GUI applications - as a result, I found it most beneficial to build from the top-down, refactoring as I went along. 
+
+The main JFrame is 1600 x 1000 px. Split into a Swing [BorderLayout](https://docs.oracle.com/en/java/javase/18/docs/api/java.desktop/java/awt/BorderLayout.html), the `pnl_MenuBar` occupies North and the `pnl_MainDisplay` occupies the Center.
+
+![JFrame BorderLayout Breakdown](img/JFrame%20-%3E%20Main%20Window.jpg)
+
+The `pnl_MenuBar` has a [GridLayout](https://docs.oracle.com/en/java/javase/18/docs/api/java.desktop/java/awt/GridLayout.html) with three columns in one row. The GridLayout allows the buttons that are added (`btn_MenuBar_ParseNewJD`, `btn_MenuBar_ParseOldJD`, and `btn_MenuBar_UpdateFW`) to fill the whole top "header" of the JFrame.
+
+The `pnl_MainDisplay` has a similar GridLayout (formatted with two columns and one row) that will create the scaffold for the two panel format where I can insert `pnl_MainDisplay_Left` & `pnl_MainDisplay_Right` which will serve as the foundation for the two panels / "canvases".
+
+![pnl_MainDisplay -> Left & Right Panels](img/pnl_MainDisplay%20-%3E%20Left%20%26%20Right%20Panels.jpg)
+
+`pnl_MainDisplay_Left` and `pnl_MainDisplay_Right` are then both set with a BorderLayout so that a buffer / border can be created around the areas / components that I'll mainly be updating through the application. Each border (`North`, `South`, `East`, & `West`) will be set with a specific "filler" panel with a set dimension so that the `Center` panel for both `pnl_MainDisplay_Left` and `pnl_MainDisplay_Right` can be dynamically formatted to show either a Job Description / Application instructions (in the case of `pnl_MainDisplay_Left`) or input form / results panel (in the case of `pnl_MainDisplay_Right`).
+
+![Left & Right Panels -> Subcomponents](img/Left%20%26%20Right%20Panels%20-%3E%20Subcomponents.jpg)
+
+The final addition to be made is to add `pnl_Right_Center` & `pnl_Left_Center` to the `pnl_MainDisplay_Right` & `pnl_MainDisplay_Left` components (respectively). With this scaffold in place we can now make changes to the contents of `pnl_Right_North` & `pnl_Left_North` (specifically the JLabel's contained in both of those components) and to `pnl_Right_Center` & `pnl_Left_Center` without impacting the overall look / feel of the application.
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Back End Structure
 TBD
 
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
 ## HOWTO: Use This Application
+
+### Running The Program
 TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
+### Parsing A New Job Description
+TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
+### Parsing An Old Job Description
+TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+### Updating The "Forbidden Words" List
+TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ## HOWTO: Expand This Application
 TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
+[^1]: It's actually - no pun intended - opened my eyes to the idea of accessibility within larger design. It wasn't until I was doing later research on color blindness / sensitivity that I accidentally chose colors that are within the spectrum of the most common color blindness (Deuteranomaly - which is a reduced sensitivity to green light). In a future version of the program, I'll create a color adjuster that allows folks to change the color scheme of the program to one that better suits their needs.
