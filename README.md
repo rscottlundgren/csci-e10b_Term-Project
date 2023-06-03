@@ -57,7 +57,23 @@ Finally, there's a lot of job search "advice" out there about how to prepare for
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 #### For The Developer
-TBD
+As previously stated, the application is designed with a two-panel approach in mind. Java Swing follows a relatively unique scaffold for implementing / designing GUI applications - as a result, I found it most beneficial to build from the top-down, refactoring as I went along. 
+
+The main JFrame is 1600 x 1000 px. Split into a Swing [BorderLayout](https://docs.oracle.com/en/java/javase/18/docs/api/java.desktop/java/awt/BorderLayout.html), the `pnl_MenuBar` occupies North and the `pnl_MainDisplay` occupies the Center.
+
+![JFrame BorderLayout Breakdown](img/JFrame%20-%3E%20Main%20Window.jpg)
+
+The `pnl_MenuBar` has a [GridLayout](https://docs.oracle.com/en/java/javase/18/docs/api/java.desktop/java/awt/GridLayout.html) with three columns in one row. The GridLayout allows the buttons that are added (`btn_MenuBar_ParseNewJD`, `btn_MenuBar_ParseOldJD`, and `btn_MenuBar_UpdateFW`) to fill the whole top "header" of the JFrame.
+
+The `pnl_MainDisplay` has a similar GridLayout (formatted with two columns and one row) that will create the scaffold for the two panel format where I can insert `pnl_MainDisplay_Left` & `pnl_MainDisplay_Right` which will serve as the foundation for the two panels / "canvases".
+
+![pnl_MainDisplay -> Left & Right Panels](img/pnl_MainDisplay%20-%3E%20Left%20%26%20Right%20Panels.jpg)
+
+`pnl_MainDisplay_Left` and `pnl_MainDisplay_Right` are then both set with a BorderLayout so that a buffer / border can be created around the areas / components that I'll mainly be updating through the application. Each border (`North`, `South`, `East`, & `West`) will be set with a specific "filler" panel with a set dimension so that the `Center` panel for both `pnl_MainDisplay_Left` and `pnl_MainDisplay_Right` can be dynamically formatted to show either a Job Description / Application instructions (in the case of `pnl_MainDisplay_Left`) or input form / results panel (in the case of `pnl_MainDisplay_Right`).
+
+![Left & Right Panels -> Subcomponents](img/Left%20%26%20Right%20Panels%20-%3E%20Subcomponents.jpg)
+
+The final addition to be made is to add `pnl_Right_Center` & `pnl_Left_Center` to the `pnl_MainDisplay_Right` & `pnl_MainDisplay_Left` components (respectively). With this scaffold in place we can now make changes to the contents of `pnl_Right_North` & `pnl_Left_North` (specifically the JLabel's contained in both of those components) and to `pnl_Right_Center` & `pnl_Left_Center` without impacting the overall look / feel of the application.
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
@@ -69,12 +85,20 @@ TBD
 ## HOWTO: Use This Application
 
 ### Running The Program
+TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Parsing A New Job Description
+TBD
+
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Parsing An Old Job Description
+TBD
 
-### 
+[Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+### Updating The "Forbidden Words" List
 TBD
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
