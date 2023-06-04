@@ -75,8 +75,8 @@ public class GreenhouseParser {
      * setting all other instance variables to an empty or false default based
      * on the variable type.
      * 
-     * @param url      A String representation of the Uniform Resource Locator used
-     *                 to make a connection to a website.
+     * @param url      A String representation of the Uniform Resource Locator
+     *                 used to make a connection to a website.
      * @param filePath A String representation of the File Path where the User
      *                 would like to store their copies of the job description.
      */

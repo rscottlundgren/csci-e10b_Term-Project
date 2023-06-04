@@ -3,7 +3,7 @@
 - [Concept](https://github.com/rscottlundgren/csci-e10b_Term-Project#concept)
 - [History](https://github.com/rscottlundgren/csci-e10b_Term-Project#history)
 - [Application Architecture](https://github.com/rscottlundgren/csci-e10b_Term-Project#application-architecture)
-  - [Front End Structure](https://github.com/rscottlundgren/csci-e10b_Term-Project#front-end-structure)
+  - [Front End (UX / UI)](https://github.com/rscottlundgren/csci-e10b_Term-Project#front-end-structure)
   - [Back End Structure](https://github.com/rscottlundgren/csci-e10b_Term-Project#back-end-structure)
 - [HOWTO: Use This Application](https://github.com/rscottlundgren/csci-e10b_Term-Project#howto-use-this-application)
 - [HOWTO: Expand This Application](https://github.com/rscottlundgren/csci-e10b_Term-Project#howto-expand-this-application)
@@ -56,7 +56,7 @@ Finally, there's a lot of job search "advice" out there about how to prepare for
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
-#### For The Developer
+#### For The Developer[^2]
 As previously stated, the application is designed with a two-panel approach in mind. Java Swing follows a relatively unique scaffold for implementing / designing GUI applications - as a result, I found it most beneficial to build from the top-down, refactoring as I went along. 
 
 The main JFrame is 1600 x 1000 px. Split into a Swing [BorderLayout](https://docs.oracle.com/en/java/javase/18/docs/api/java.desktop/java/awt/BorderLayout.html), the `pnl_MenuBar` occupies North and the `pnl_MainDisplay` occupies the Center.
@@ -78,14 +78,61 @@ The final addition to be made is to add `pnl_Right_Center` & `pnl_Left_Center` t
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Back End Structure
-TBD
+While the Front End of this program is entirely contained within `PostingParser.java`, the Back End is split between all five of the main files to some degree. This is unfortunate and unavoidable and will be covered in a few paragraphs so while mostly confined to `PostingParserBackEnd.java`, `ForbiddenWords.java`, `GreenhouseParser.java`, & `UniqueWordsAndCounts.java`, there is a little overlap in `PostingParser.java` as well[^3].
+
+`PostingParserBackEnd.java` primarily acts as the Stage Manager to `PostingParser.java`'s Director - telling the Actors (`ForbiddenWords.java`, `GreenhouseParser.java`, `UniqueWordsAndCounts.java`) and itself what to do when an Event is kicked off within `PostingParser.java`. It also acts as the State Manager - dictating whether or not an Event should be executed upon based on the present state of the application. 
+
+#### `PostingParserBackEnd.java`
+Primarily managing the overall state of the application and its manipulation, `PostingParserBackEnd.java` contains information about:
+
+- The File Path(s) that are used either as reference points where a directory or file SHOULD be created or as reference point to where a directory or file HAS BEEN created
+- Whether or not the the User provided Uniform Resource Locator (URL) is part of the Greenhouse environment (has `boards.greenhouse.io` host)
+- What window of the application the User presently has active
+- An empty "tally" of the Unique Words & Counts that are present in the User provided Job Description URL
+- An populated list of the User's last list of Forbidden Words
+
+Additionally the `PostingParserBackEnd` class... 
+
+- Completely controls the creation and population of the `PostingParser/`, `<COMPANY>/`, `<DATE>_<JOB_DESCRIPTION>/`, & `raw_data/` directories in addition to the `ParsedJD.txt` & `raw_data.html` files (with the help of "GreenhouseParser" class)
+- Coordinates the "tally" and "re-tally" of each job description's Unique Words & Counts against the User's list of "Forbidden Words"
+- Coordinates the population of the "Forbidden Words" object instance as well as the file (`ForbiddenWords.txt`) which serves as a serializer - of sorts - for the User's local copy of the application
+
+#### `ForbiddenWords.java`
+Solely responsible for the addition, removal, and comparison of Strings to the "ForbiddenWords" object instance created at application runtime. The "ForbiddenWords" class is an extension of a `TreeSet<String>` which allows the program to successfully compare the keys found in the "UniqueWordsAndCounts" class against the values found in "ForbiddenWords" for presence or absence, allowing the program to correctly omit the "Forbidden Words" which might serve to further muddy the collected data.
+
+#### `GreenhouseParser.java`
+"GreenhouseParser" instance class is responsible for three things:
+
+1. Knowing where the Parser Pointer is within the larger URL being parsed
+2. Doing the legwork for the creation and population of the `<COMPANY>/`, `<DATE>_<JOB_DESCRIPTION>/`, & `raw_data/` directories in addition to the `ParsedJD.txt` & `raw_data.html` files
+3. Collecting the date of parsing for inclusion in the Job Description directory name
+
+Overall, the "GreenhouseParser" instance class uses a callback methodology to utilize the `HTMLEditorKit` class that's part of the larger Java Swing library.
+
+#### `UniqueWordsAndCounts.java`
+Finally, the "UniqueWordsAndCounts" instance class is a simple extension of the Java `Hashtable<String, Integer>` class with a couple of helpful additions:
+
+1. In order to easily "re-tally" the unique words and counts of a job description after the "Forbidden Words" list has been updated, a custom method was created to empty the Hashtable when called so that a fresh count could be collected without "doubling up" on data.
+2. In order to more accurately compare words, a custom "strip" method was created so that all punctuation would be removed from a word in a job description with the exception of an apostrophe or a hyphen.
+
+None of the original Hashtable methods were overridden for the purposes of this program.
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ## HOWTO: Use This Application
 
 ### Running The Program
-TBD
+**NOTE: In order to run this program, you'll need to have Java 8 or later installed on your local machine.**
+
+1. After cloning this repo, navigate (`cd`) into the `csci-e10b_Term_Project` folder.
+2. Execute the following command to compile the program:
+   ```
+   javac PostingParser.java
+   ```
+3. Execute the following command to run the program:
+   ```
+   java PostingParser
+   ``` 
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
@@ -109,3 +156,7 @@ TBD
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 [^1]: It's actually - no pun intended - opened my eyes to the idea of accessibility within larger design. It wasn't until I was doing later research on color blindness / sensitivity that I accidentally chose colors that are within the spectrum of the most common color blindness (Deuteranomaly - which is a reduced sensitivity to green light). In a future version of the program, I'll create a color adjuster that allows folks to change the color scheme of the program to one that better suits their needs.
+
+[^2]: Quick note about dimensions: obviously we'd want anything that we design to be reactive and to perform well according to the malleable needs of our Users (not every user wants a HUGE window taking up their screen real estate). Of course, this can be accomplished with Swing, however it was not something I was able to successfully accomplish (well) during the four-week constraint I had to accomplish this project. 
+
+[^3]: It wasn't until recently that I figured out a method to fully take the **Controller** responsibilities that should belong in `PostingParserBackEnd.java` out of `PostingParser.java` (**View**). I'll probably clean up this oversight at a later date to resolve Issue #26. 
