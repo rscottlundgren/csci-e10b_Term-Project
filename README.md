@@ -1,11 +1,35 @@
 # PostingParser
+All of the information that you might want to know concerning this project has been contained within this README. However, if you're looking to "test drive" the program without taking the time to read this material, instructions on how to do so have been provided below:
+
+**NOTE: In order to run this program, you'll need to have Java 8 or later installed on your local machine.**
+
+1. After cloning this repo, navigate (`cd`) into the `csci-e10b_Term_Project` folder.
+2. Execute the following command to compile the program:
+   ```
+   javac PostingParser.java
+   ```
+3. Execute the following command to run the program:
+   ```
+   java PostingParser
+   ``` 
+
 ## Table of Contents
 - [Concept](https://github.com/rscottlundgren/csci-e10b_Term-Project#concept)
 - [History](https://github.com/rscottlundgren/csci-e10b_Term-Project#history)
 - [Application Architecture](https://github.com/rscottlundgren/csci-e10b_Term-Project#application-architecture)
   - [Front End (UX / UI)](https://github.com/rscottlundgren/csci-e10b_Term-Project#front-end-structure)
+    - [For The User](https://github.com/rscottlundgren/csci-e10b_Term-Project#for-the-user)
+    - [For The Developer](https://github.com/rscottlundgren/csci-e10b_Term-Project#for-the-developer2)
   - [Back End Structure](https://github.com/rscottlundgren/csci-e10b_Term-Project#back-end-structure)
+    - [`PostingParserBackEnd.java`](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparserbackendjava)
+    - [`ForbiddenWords.java`](https://github.com/rscottlundgren/csci-e10b_Term-Project#forbiddenwordsjava)
+    - [`GreenhouseParser.java`](https://github.com/rscottlundgren/csci-e10b_Term-Project#greenhouseparserjava)
+    - [`UniqueWordsAndCounts.java`](https://github.com/rscottlundgren/csci-e10b_Term-Project#uniquewordsandcountsjava)
 - [HOWTO: Use This Application](https://github.com/rscottlundgren/csci-e10b_Term-Project#howto-use-this-application)
+  - [Running The Program](https://github.com/rscottlundgren/csci-e10b_Term-Project#running-the-program)
+  - [Parsing A New Job Description]()
+  - [Parsing An Old Job Description]()
+  - [Updating The "ForbiddenWords" List]()
 - [HOWTO: Expand This Application](https://github.com/rscottlundgren/csci-e10b_Term-Project#howto-expand-this-application)
 
 ## Concept
@@ -47,7 +71,7 @@ That said, there's a bit more to how I structured this program than a simple MVC
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Front End (UI / UX)
-#### For The User...
+#### For The User
 From a User standpoint I wanted to make this an easy application to understand and use, which led to the decision to have a very basic `MenuBar` at the top of the JFrame and a `MainDisplay` panel as the place where information from the User could be displayed and input into the program as a whole. Further, keeping interactive sections on one side of the `MainDisplay` and "Read Only" instructions or data on another side of the `MainDisplay` left me with the idea of taking a `panel` (or `pnl`) approach to the project (you can see the next section for a specific breakdown of how I accomplished that in Java Swing). 
 
 Also, my eyes are pretty sensitive (and have gotten more sensitive as I age) to "light mode" screens. Dark mode is a lot easier for my eyes, so I opted to build a "dark mode" first before creating a "light mode" (if I had the time while coding the project over the four week period). Additionally, having a "dark mode" as my first choice allowed me a larger color palette to choose from when trying to create contrasting colors (which is why I ended up with a yellow / green / chartreuse color palette)[^1].
@@ -137,16 +161,62 @@ None of the original Hashtable methods were overridden for the purposes of this 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Parsing A New Job Description
-TBD
+
+1. Execute the following command in the terminal:
+   ```
+   javac PostingParser.java && java PostingParser
+   ```
+2. Click the "Browse" button:
+   ![Select Save Location](img/001_PANJD_Save%20Location.jpg)
+
+3. Select the location where you'd like to create the "PostingParser" directory for your parsed job descriptions and click "Choose":
+   ![Select Save Location From JFileChooser](img/002_PANJD_FileChooser.jpg)
+
+4. Copy and paste the URL for the job description you'd like to parse:
+   ![Paste The Job Description URL](img/003_PANJD_URL.jpg)
+
+5. Click the "Parse The Description!" button:
+   ![Parse The Job Description](img/004_PANJD_Submit%20Button.jpg)
+
+6. Review your results:
+   ![Review Your Results](img/005_PANJD_Results.jpg)
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
 ### Parsing An Old Job Description
-TBD
+1. Execute the following command in the terminal:
+   ```
+   javac PostingParser.java && java PostingParser
+   ```
+
+2. Click the "Parse Old Job Description" button in the Menu Bar:
+   ![Menu Bar - Parse Old Job Description](img/001_PAOJD_Click%20Parse%20Old%20JD%20Button.jpg)
+
+3. Click the "Browse" button:
+   ![Click "Browse" Button](img/002_PAOJD_Save%20Location.jpg)
+
+4. Select the specific "ParsedJD.txt" file that you're looking to re-parse using the File Chooser menu and click "Open":
+   ![Select "ParsedJD.txt" From JFileChooser](img/003_PAOJD_FileChooser.jpg)
+
+5. Click the "Parse The Description!" button:
+   ![Parse The Job Description](img/004_PAOJD_Submit%20Button.jpg)
+
+6. Review your results:
+   ![Review Your Results](img/005_PAOJD_Results.jpg)
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
+
 ### Updating The "Forbidden Words" List
-TBD
+1. Execute the following command in the terminal:
+   ```
+   javac PostingParser.java && java PostingParser
+   ```
+
+2. Click the "Update 'Forbidden Words' List" button in the Menu Bar:
+   ![Menu Bar - Update "Forbidden Words" List](img/001_UFWL_Click%20Update%20Forbidden%20Words%20Button.jpg)
+
+3. Append or remove words as necessary:
+   ![Append / Remove Words As Necessary](img/002_UFWL_Append%20Remove%20As%20Needed.jpg)
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
@@ -155,8 +225,8 @@ TBD
 
 [Back to Top](https://github.com/rscottlundgren/csci-e10b_Term-Project#postingparser)
 
-[^1]: It's actually - no pun intended - opened my eyes to the idea of accessibility within larger design. It wasn't until I was doing later research on color blindness / sensitivity that I accidentally chose colors that are within the spectrum of the most common color blindness (Deuteranomaly - which is a reduced sensitivity to green light). In a future version of the program, I'll create a color adjuster that allows folks to change the color scheme of the program to one that better suits their needs.
+[^1]: It's actually - no pun intended - opened my eyes to the idea of accessibility within larger design. It wasn't until I was doing later research on color blindness / sensitivity that I realized I had accidentally chosen colors that are within the spectrum of the most common color blindness (Deuteranomaly - which is a reduced sensitivity to green light). In a future version of the program, I'll create a color adjuster that allows folks to change the color scheme of the program to one that better suits their needs.
 
 [^2]: Quick note about dimensions: obviously we'd want anything that we design to be reactive and to perform well according to the malleable needs of our Users (not every user wants a HUGE window taking up their screen real estate). Of course, this can be accomplished with Swing, however it was not something I was able to successfully accomplish (well) during the four-week constraint I had to accomplish this project. 
 
-[^3]: It wasn't until recently that I figured out a method to fully take the **Controller** responsibilities that should belong in `PostingParserBackEnd.java` out of `PostingParser.java` (**View**). I'll probably clean up this oversight at a later date to resolve Issue #26. 
+[^3]: It wasn't until recently that I figured out a method to fully take the **Controller** responsibilities that should belong in `PostingParserBackEnd.java` out of `PostingParser.java` (**View**). I'll probably clean up this oversight at a later date to resolve Issue #18. 
